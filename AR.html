@@ -1,56 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>WebAR with GLB</title>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/webxr/ARButton.js"></script>
-  <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
-  </style>
-</head>
-<body>
-  <script type="module">
-    import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/webxr/ARButton.js';
-    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera();
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.xr.enabled = true;
-    document.body.appendChild(renderer.domElement);
-
-    document.body.appendChild(ARButton.createButton(renderer, { requiredFeatures: ['hit-test'] }));
-
-    const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-    scene.add(light);
-
-    const loader = new GLTFLoader();
-    let model;
-
-    loader.load('make_a_robot_named_Sa_0414153449_texture.glb', function(gltf) {
-      model = gltf.scene;
-      model.scale.set(0.2, 0.2, 0.2); // Adjust scale if needed
-      model.visible = false;
-      scene.add(model);
-    });
-
-    const controller = renderer.xr.getController(0);
-    controller.addEventListener('select', () => {
-      if (model) {
-        model.position.set(0, 0, -0.5).applyMatrix4(controller.matrixWorld);
-        model.visible = true;
+  <head>
+    <meta charset="utf-8" />
+    <title>WebXR AR GLB Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: sans-serif;
+        background-color: #000;
+        color: #fff;
       }
-    });
-    scene.add(controller);
 
-    renderer.setAnimationLoop(() => {
-      renderer.render(scene, camera);
-    });
-  </script>
-</body>
-  </html>
-  
+      #ar-overlay {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 10;
+      }
+
+      #start-ar {
+        padding: 16px 32px;
+        font-size: 18px;
+        background: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      #start-ar:hover {
+        background: #0b5ed7;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Overlay UI -->
+    <div id="ar-overlay">
+      <h1>Start AR Experience</h1>
+      <button id="start-ar">Enter AR</button>
+    </div>
+
+    <script type="module">
+      import * as THREE from 'https://cdn.skypack.dev/three@0.160.1';
+      import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
+      import { ARButton } from 'https://cdn.skypack.dev/three@0.160.1/examples/jsm/webxr/ARButton.js';
+
+      let camera, scene, renderer, controller;
+
+      init();
+
+      function init() {
+        // Scene
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.xr.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        // Light
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        scene.add(light);
+
+        // Load Model
+        const loader = new GLTFLoader();
+        loader.load('make_a_robot_named_Sa_0414153449_texture.glb', function (gltf) {
+          const model = gltf.scene;
+          model.scale.set(0.5, 0.5, 0.5);
+          model.position.set(0, 0, -0.5);
+          scene.add(model);
+        });
+
+        // Controller
+        controller = renderer.xr.getController(0);
+        scene.add(controller);
+
+        // AR Session Start
+        const startButton = document.getElementById('start-ar');
+        const overlay = document.getElementById('ar-overlay');
+
+        startButton.addEventListener('click', () => {
+          document.body.appendChild(ARButton.createButton(renderer, { requiredFeatures: ['hit-test'] }));
+          renderer.setAnimationLoop(render);
+          overlay.style.display = 'none';
+        });
+
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+      }
+
+      function render(timestamp, frame) {
+        renderer.render(scene, camera);
+      }
+    </script>
+  </body>
+</html>
