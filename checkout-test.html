@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout | Ro&Bot Royal Botics</title>
+  <link rel="icon" href="https://i.ibb.co/HT1Tct5N/craiyon-161828-transparent.png" type="image/png" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #000000 0%, #3b0056 100%);
+      color: #e5e5e5;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 60px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 15px;
+      margin-top: 40px;
+    }
+
+    h1, h2 {
+      color: #a100f2;
+      text-align: center;
+    }
+
+    .step {
+      display: none;
+      padding: 20px;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .item-list {
+      list-style: none;
+      padding: 0;
+      font-size: 1.1rem;
+    }
+
+    .item-list li {
+      margin-bottom: 10px;
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #ddd;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #222;
+      color: #fff;
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    button {
+      background: #a100f2;
+      color: #fff;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 0 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #7e00c2;
+    }
+
+    #gpay-button {
+      display: inline-block;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Checkout</h1>
+
+    <div class="step active" id="step1">
+      <h2>Your Items</h2>
+      <ul class="item-list">
+        <li>DEMO BOT – 32 EUR</li>
+        <li>DEMO COMPANION – 33 EUR</li>
+        <li>TEST ITEM – 3 EUR</li>
+      </ul>
+      <div class="buttons">
+        <button onclick="nextStep()">Next</button>
+      </div>
+    </div>
+
+    <div class="step" id="step2">
+      <h2>Shipping Information</h2>
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" required>
+      </div>
+      <div class="form-group">
+        <label for="address">Street Address</label>
+        <input type="text" id="address" required>
+      </div>
+      <div class="form-group">
+        <label for="apt">Apt, Suite, etc. (optional)</label>
+        <input type="text" id="apt">
+      </div>
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" required>
+      </div>
+      <div class="form-group">
+        <label for="postal">Postal Code</label>
+        <input type="text" id="postal" required>
+      </div>
+      <div class="form-group">
+        <label for="country">Country</label>
+        <input type="text" id="country" required>
+      </div>
+      <div class="form-group">
+        <label for="region">Region</label>
+        <select id="region">
+          <option>European Union</option>
+          <option>Europe (non-EU)</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="buttons">
+        <button onclick="prevStep()">Back</button>
+        <button onclick="nextStep()">Next</button>
+      </div>
+    </div>
+
+    <div class="step" id="step3">
+      <h2>Payment Method</h2>
+      <div class="buttons">
+        <button onclick="alert('Card Payment Placeholder')">Pay with Card</button>
+        <div id="gpay-button"></div>
+      </div>
+      <div class="buttons">
+        <button onclick="prevStep()">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+
+    function showStep(step) {
+      document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+      document.getElementById(`step${step}`).classList.add('active');
+    }
+
+    function nextStep() {
+      currentStep++;
+      showStep(currentStep);
+    }
+
+    function prevStep() {
+      currentStep--;
+      showStep(currentStep);
+    }
+  </script>
+
+  <!-- Google Pay Button Script -->
+  <script>
+    const baseRequest = {
+      apiVersion: 2,
+      apiVersionMinor: 0
+    };
+
+    const allowedCardNetworks = ["VISA", "MASTERCARD"];
+    const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
+
+    const tokenizationSpecification = {
+      type: 'DIRECT',
+      parameters: {
+        protocolVersion: 'ECv2',
+        publicKey: 'BOdoXPzJhFz3z8Xe...REPLACE_WITH_A_TEST_KEY...J5Dg='
+      }
+    };
+
+    const baseCardPaymentMethod = {
+      type: 'CARD',
+      parameters: {
+        allowedAuthMethods: allowedCardAuthMethods,
+        allowedCardNetworks: allowedCardNetworks
+      }
+    };
+
+    const cardPaymentMethod = Object.assign({}, baseCardPaymentMethod, {
+      tokenizationSpecification: tokenizationSpecification
+    });
+
+    let paymentsClient = null;
+
+    function getGoogleIsReadyToPayRequest() {
+      return Object.assign({}, baseRequest, {
+        allowedPaymentMethods: [baseCardPaymentMethod]
+      });
+    }
+
+    function getGooglePaymentDataRequest() {
+      return Object.assign({}, baseRequest, {
+        allowedPaymentMethods: [cardPaymentMethod],
+        transactionInfo: {
+          totalPriceStatus: 'FINAL',
+          totalPrice: '68.00',
+          currencyCode: 'EUR',
+          countryCode: 'DE'
+        },
+        merchantInfo: {
+          merchantName: 'Ro&Bot Royal Botics (Test)'
+        }
+      });
+    }
+
+    function onGooglePayLoaded() {
+      paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
+
+      paymentsClient.isReadyToPay(getGoogleIsReadyToPayRequest())
+        .then(function (response) {
+          if (response.result) {
+            const button = paymentsClient.createButton({ onClick: onGooglePaymentButtonClicked });
+            document.getElementById('gpay-button').appendChild(button);
+          }
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
+    }
+
+    function onGooglePaymentButtonClicked() {
+      const paymentDataRequest = getGooglePaymentDataRequest();
+      paymentsClient.loadPaymentData(paymentDataRequest)
+        .then(function (paymentData) {
+          alert("Payment successful (TEST MODE). No money was charged.");
+          console.log('Google Pay Data:', paymentData);
+        })
+        .catch(function (err) {
+          console.error("Payment failed:", err);
+          alert("Google Pay failed or was cancelled.");
+        });
+    }
+  </script>
+  <script async src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
+</body>
+</html>
