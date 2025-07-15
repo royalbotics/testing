@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ro&Bot Royal Botics</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #0ff;
+            font-family: 'Orbitron', sans-serif;
+            overflow-x: hidden;
+            text-align: center;
+        }
+        .menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .menu div {
+            width: 40px;
+            height: 4px;
+            background: #0ff;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+        .menu.open div:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        .menu.open div:nth-child(2) {
+            opacity: 0;
+        }
+        .menu.open div:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 250px;
+            height: 100vh;
+            background: rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 4px 0px 15px rgba(0, 255, 255, 0.5);
+            transition: left 0.4s ease-in-out;
+            padding-top: 80px;
+            z-index: 199;
+        }
+        .sidebar a {
+            display: block;
+            color: #0ff;
+            text-decoration: none;
+            padding: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background: rgba(0, 255, 255, 0.3);
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 1s forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+        .cta {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1rem;
+            background: #0ff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .cta:hover {
+            background: #0cc;
+        }
+        .section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            text-shadow: 0 0 10px #0ff;
+            border-top: 2px solid #0ff;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="menu" onclick="toggleMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <a href="#section1">Advanced AI</a>
+        <a href="#section2">Next-Gen Robotics</a>
+        <a href="#section3">Transforming Industries</a>
+    </div>
+    <div class="container">
+        <div class="logo">Ro&Bot Royal Botics</div>
+        <div class="subtitle">Innovating the Future of Robotics</div>
+        <button class="cta" onclick="scrollToContent()">Discover More</button>
+    </div>
+    <div class="section" id="section1">🔹 Advanced AI Integration 🔹</div>
+    <div class="section" id="section2">🚀 Next-Gen Robotics Solutions 🚀</div>
+    <div class="section" id="section3">🌟 Transforming Industries 🌟</div>
+    <script>
+        function scrollToContent() {
+            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+        }
+
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.querySelector(".menu").classList.toggle("open");
+        }
+
+        document.addEventListener("scroll", function () {
+            const sections = document.querySelectorAll(".section");
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.8) {
+                    section.classList.add("visible");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
