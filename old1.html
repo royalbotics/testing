@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RO&Bot Royal Botics</title>
+  <style>
+    /* Define Color Variables */
+    :root {
+      --yass-queen: #ff1d58;
+      --sister-sister: #f75990;
+      --crown-yellow: #fff685;
+      --blue-light: #00DDFF;
+      --brutal-blue: #0049B7;
+    }
+
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Header and Navigation */
+    header {
+      background-color: var(--brutal-blue);
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+    }
+    
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      margin-top: 10px;
+    }
+    
+    nav ul li {
+      margin: 0 15px;
+    }
+    
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                  url('robot-background.jpg') center/cover no-repeat;
+      color: #fff;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: 3em;
+    }
+    
+    .hero p {
+      font-size: 1.2em;
+      margin: 20px 0;
+    }
+    
+    /* Section Titles */
+    .section-title {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2em;
+      position: relative;
+    }
+    
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background-color: var(--yass-queen);
+      margin: 10px auto 0;
+    }
+    
+    /* Button Styles */
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: var(--sister-sister);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+    
+    .button:hover {
+      background-color: var(--yass-queen);
+    }
+    
+    /* Robots Section */
+    #robots {
+      padding: 60px 20px;
+    }
+    
+    .robot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    .robot-card {
+      background-color: #fff;
+      border: 2px solid var(--blue-light);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+    
+    .robot-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .robot-card img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    
+    /* Samantha Section */
+    .samantha-section {
+      background-color: var(--blue-light);
+      color: #fff;
+      padding: 60px 20px;
+    }
+    
+    /* About Section */
+    .about-section {
+      background-color: var(--crown-yellow);
+      color: #333;
+      padding: 60px 20px;
+    }
+    
+    /* Contact Section */
+    #contact {
+      padding: 60px 20px;
+      text-align: center;
+    }
+    
+    /* Footer */
+    footer {
+      background-color: var(--brutal-blue);
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 500px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .modal-content img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .close-button {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .close-button:hover {
+      color: black;
+    }
+
+    /* Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      background-color: var(--sister-sister);
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      display: none; /* Hidden initially */
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 101;
+    }
+    
+    .back-to-top:hover {
+      background-color: var(--yass-queen);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <h1>RO&Bot Royal Botics</h1>
+      <nav>
+        <ul>
+          <li><a href="#robots">Robots</a></li>
+          <li><a href="#samantha">Samantha AI</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Welcome to RO&Bot Royal Botics</h1>
+      <p>Where innovation meets royal precision.</p>
+      <a href="#robots" class="button">Explore Our Robots</a>
+    </div>
+  </section>
+
+  <!-- Robots Section -->
+  <section id="robots">
+    <div class="container">
+      <h2 class="section-title">Our Robots</h2>
+      <div class="robot-grid">
+        <!-- Robot Card 1 -->
+        <div class="robot-card">
+          <img src="robot1.jpg" alt="Robot Alpha">
+          <h3>Robot Alpha</h3>
+          <p>Featuring advanced mechanics and sleek design. Equipped with Samantha AI.</p>
+        </div>
+        <!-- Robot Card 2 -->
+        <div class="robot-card">
+          <img src="robot2.jpg" alt="Robot Beta">
+          <h3>Robot Beta</h3>
+          <p>Engineered for precision and efficiency. Powered by Samantha AI for smart operations.</p>
+        </div>
+        <!-- Robot Card 3 -->
+        <div class="robot-card">
+          <img src="robot3.jpg" alt="Robot Gamma">
+          <h3>Robot Gamma</h3>
+          <p>A perfect blend of aesthetics and technology. Samantha AI enhances every function.</p>
+        </div>
+        <!-- Additional robot cards can be added here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Samantha AI Section -->
+  <section id="samantha" class="samantha-section">
+    <div class="container">
+      <h2 class="section-title">Meet Samantha AI</h2>
+      <p>
+        Samantha AI is the intelligent force behind our robots. Integrated into most of our models, Samantha provides unparalleled decision-making, seamless interaction, and adaptive learning capabilities. Experience the future with Samantha.
+      </p>
+      <a href="#contact" class="button">Get in Touch</a>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <h2 class="section-title">About RO&Bot Royal Botics</h2>
+      <p>
+        At RO&Bot Royal Botics, we combine state-of-the-art robotics with the intelligence of Samantha AI to create machines that are not only functional but revolutionary. Our commitment to excellence drives us to push the boundaries of technology, ensuring that every robot we produce stands as a testament to innovation and quality.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title">Contact Us</h2>
+      <p>
+        If you have any questions or inquiries, please reach out to us at:
+      </p>
+      <p>
+        Email: info@robotalytics.com | Phone: (123) 456-7890
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 RO&Bot Royal Botics. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Robot Modal -->
+  <div id="robot-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <img id="modal-image" src="" alt="Robot Image" />
+      <h3 id="modal-title"></h3>
+      <p id="modal-description"></p>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top">Top</button>
+
+  <script>
+    // Wait for the DOM to load before adding event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      /* --- Modal Functionality --- */
+      var modal = document.getElementById('robot-modal');
+      var modalImage = document.getElementById('modal-image');
+      var modalTitle = document.getElementById('modal-title');
+      var modalDescription = document.getElementById('modal-description');
+      var closeButton = document.querySelector('.close-button');
+      
+      // Add event listener to each robot card to open modal on click
+      var robotCards = document.querySelectorAll('.robot-card');
+      robotCards.forEach(function(card) {
+        card.addEventListener('click', function() {
+          var image = card.querySelector('img').src;
+          var title = card.querySelector('h3').innerText;
+          var description = card.querySelector('p').innerText;
+          modalImage.src = image;
+          modalTitle.innerText = title;
+          modalDescription.innerText = description;
+          modal.style.display = 'block';
+        });
+      });
+      
+      // Close modal when close button is clicked
+      closeButton.addEventListener('click', function() {
+        modal.style.display = 'none';
+      });
+      
+      // Close modal when clicking outside of modal content
+      window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+
+      /* --- Back to Top Button Functionality --- */
+      var backToTopButton = document.getElementById('back-to-top');
+
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+          backToTopButton.style.display = 'block';
+        } else {
+          backToTopButton.style.display = 'none';
+        }
+      });
+
+      backToTopButton.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
