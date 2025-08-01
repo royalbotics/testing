@@ -1,61 +1,491 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>TESTING of AR</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SamanthAI Chat</title>
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: #f9f9f9;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #000000 0%, #3b0056 100%);
+      color: #e5e5e5;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    header {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    h1 {
-      font-size: 2em;
-      margin-bottom: 0.5em;
+
+    header a {
+      color: #a100f2;
+      font-size: 1.5rem;
+      text-decoration: none;
+      font-weight: 700;
+      user-select: none;
     }
-    .product-details {
-      margin-bottom: 2em;
+
+    header h1 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.6rem;
+      color: #e5e5e5;
+      flex-grow: 1;
     }
-    model-viewer {
-      width: 100%;
-      height: 500px;
-      border: 1px solid #ddd;
+
+    #clear-chat-btn {
+      background: #a100f2;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
+      user-select: none;
+    }
+    #clear-chat-btn:hover {
+      background: #8600cc;
+    }
+
+    #chat-window {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 12px 18px;
+      border-radius: 20px;
+      line-height: 1.4;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #a100f2;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background: #370066;
+      color: #ddd;
+      border-bottom-left-radius: 4px;
+    }
+
+    #input-area {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 12px 16px;
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 30px;
+      outline: none;
+      font-family: 'Poppins', sans-serif;
+      min-width: 0;
+      color: #e5e5e5;
+      background: rgba(255 255 255 / 0.1);
+    }
+
+    #send-btn,
+    #keyboard-toggle {
+      padding: 12px;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+      background: #a100f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 48px;
+      height: 48px;
+      transition: background 0.3s ease;
+    }
+
+    #send-btn:hover {
+      background: #8600cc;
+    }
+
+    #keyboard-toggle {
+      background: #444;
+    }
+
+    #keyboard-toggle:hover {
+      background: #666;
+    }
+
+    #send-btn i,
+    #keyboard-toggle i {
+      width: 24px;
+      height: 24px;
+      stroke-width: 2.5;
+    }
+
+    #keyboard {
+      display: none;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #keyboard button {
+      flex: 1 0 9%;
+      min-width: 36px;
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
       border-radius: 10px;
-      margin-top: 1em;
+      background: #2a003f;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      transition: background 0.3s ease;
+    }
+
+    #keyboard button:hover {
+      background: #3d005a;
+    }
+
+    #keyboard button i,
+    #keyboard button .key-label {
+      width: 100%;
+      height: 100%;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    #keyboard button svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2;
+      pointer-events: none;
+    }
+
+    /* Make spacebar bigger */
+    #keyboard button.space {
+      flex: 1 0 40%;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      background: #3d005a;
+    }
+
+    #keyboard button.space:hover {
+      background: #54007a;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.3rem;
+      }
+
+      #chat-window {
+        padding: 12px;
+      }
+
+      #input-area {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #send-btn,
+      #keyboard-toggle {
+        width: 48px;
+        height: 48px;
+      }
+
+      .message {
+        max-width: 100%;
+      }
+
+      #keyboard button {
+        flex: 1 0 12%;
+        font-size: 0.9rem;
+      }
+
+      #keyboard button.space {
+        flex: 1 0 60%;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="product-details">
-      <h1>SamanthAI</h1>
-      <p><strong>Price:</strong> NO DATA AVILABLE</p>
-      <p>This product is sleek, futuristic, and now viewable in your space using AR. Rotate it, zoom it, or place it right in your living room!</p>
-    </div>
+  <header>
+    <a href="samanthai.html" title="Go Back">&#8592;</a>
+    <h1>SamanthAI Chat</h1>
+    <button id="clear-chat-btn" aria-label="Clear chat" title="Clear chat">Clear Chat</button>
+  </header>
 
-    <!-- 3D Model Viewer -->
-    <model-viewer
-      src="https://royalbotics.github.io/testing/make_a_robot_named_Sa_0414153449_texture.glb" 
-      alt="3D model of the product"
-      ar
-      ar-modes="scene-viewer quick-look webxr"
-      auto-rotate
-      camera-controls
-      shadow-intensity="1">
-    </model-viewer>
+  <div id="chat-window" role="log" aria-live="polite">
+    <!-- Chat messages appear here -->
   </div>
+
+  <div id="input-area">
+    <input id="user-input" type="text" placeholder="Type your message..." autocomplete="off" aria-label="Type your message" />
+    <button id="send-btn" aria-label="Send message" title="Send">
+      <i data-lucide="send"></i>
+    </button>
+    <button id="keyboard-toggle" aria-label="Toggle keyboard" title="Toggle keyboard">
+      <i data-lucide="keyboard"></i>
+    </button>
+  </div>
+
+  <div id="keyboard"></div>
+
+  <script>
+    const chat = document.getElementById('chat-window');
+    const input = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const clearChatBtn = document.getElementById('clear-chat-btn');
+
+    // Load messages from localStorage on startup
+    function loadMessages() {
+      const saved = localStorage.getItem('chatMessages');
+      if (!saved) return;
+      const messages = JSON.parse(saved);
+      messages.forEach(({ sender, text, isButtonGroup }) => {
+        if (isButtonGroup) {
+          appendButtonGroup();
+        } else {
+          appendMessage(sender, text);
+        }
+      });
+      scrollToBottom();
+    }
+
+    // Save messages to localStorage
+    function saveMessages() {
+      const msgs = [];
+      chat.querySelectorAll('.message, .button-group').forEach(node => {
+        if (node.classList.contains('message')) {
+          msgs.push({
+            sender: node.classList.contains('user') ? 'user' : 'bot',
+            text: node.textContent,
+            isButtonGroup: false
+          });
+        } else if (node.classList.contains('button-group')) {
+          msgs.push({ isButtonGroup: true });
+        }
+      });
+      localStorage.setItem('chatMessages', JSON.stringify(msgs));
+    }
+
+    // Append a message element
+    function appendMessage(sender, text) {
+      const div = document.createElement('div');
+      div.className = 'message ' + (sender === 'user' ? 'user' : 'bot');
+      div.textContent = text;
+      chat.appendChild(div);
+    }
+
+    // Append button group for notification prompt
+    function appendButtonGroup() {
+      const btnContainer = document.createElement('div');
+      btnContainer.className = 'button-group';
+      btnContainer.style.marginTop = '10px';
+      btnContainer.style.display = 'flex';
+      btnContainer.style.gap = '10px';
+
+      const notifyBtn = document.createElement('button');
+      notifyBtn.textContent = "Notify Me";
+      notifyBtn.style = `
+        padding: 8px 15px;
+        border-radius: 20px;
+        background: #a100f2;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        flex: 1;
+      `;
+      notifyBtn.onclick = () => {
+        if (Notification.permission === "granted") {
+          showNotification();
+        } else if (Notification.permission !== "denied") {
+          Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+              showNotification();
+            } else {
+              alert("Notification permission denied.");
+            }
+          });
+        } else {
+          alert("Please enable notifications in your browser settings.");
+        }
+        notifyBtn.disabled = true;
+        noThanksBtn.disabled = true;
+      };
+
+      const noThanksBtn = document.createElement('button');
+      noThanksBtn.textContent = "No Thanks";
+      noThanksBtn.style = `
+        padding: 8px 15px;
+        border-radius: 20px;
+        background: #555;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        flex: 1;
+      `;
+      noThanksBtn.onclick = () => {
+        notifyBtn.disabled = true;
+        noThanksBtn.disabled = true;
+      };
+
+      btnContainer.appendChild(notifyBtn);
+      btnContainer.appendChild(noThanksBtn);
+      chat.appendChild(btnContainer);
+    }
+
+    // Scroll chat to bottom
+    function scrollToBottom() {
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    // Send message handler
+    function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendMessage('user', text);
+      saveMessages();
+      scrollToBottom();
+
+      input.value = '';
+
+      setTimeout(() => {
+        appendMessage('bot', "I'm still learning to respond. 😊");
+        appendMessage('bot', "I can notify you when I'm ready for chatting.");
+        appendButtonGroup();
+        saveMessages();
+        scrollToBottom();
+      }, 800);
+    }
+
+    // Show notification function
+    function showNotification() {
+      new Notification("SamanthAI is ready to chat!", {
+        body: "Click here to start a conversation.",
+        icon: "/favicon.png"
+      });
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    clearChatBtn.addEventListener('click', () => {
+      if (confirm("Are you sure you want to clear the chat?")) {
+        chat.innerHTML = '';
+        localStorage.removeItem('chatMessages');
+        input.focus();
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+      }
+      loadMessages();
+    });
+
+    // Virtual Keyboard
+    const keyboardToggle = document.getElementById('keyboard-toggle');
+    const keyboard = document.getElementById('keyboard');
+
+    const keys = [
+      ..."1234567890",
+      ..."qwertyuiop",
+      ..."asdfghjkl",
+      ..."zxcvbnm",
+      "space",
+      "backspace"
+    ];
+
+    keyboardToggle.addEventListener('click', () => {
+      keyboard.style.display = keyboard.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    keys.forEach(key => {
+      const btn = document.createElement('button');
+
+      if (key === "backspace") {
+        btn.classList.add('backspace');
+        btn.innerHTML = `<i data-lucide="delete"></i>`;
+        btn.title = "Backspace";
+        btn.addEventListener('click', () => {
+          input.value = input.value.slice(0, -1);
+          input.focus();
+        });
+      } else if (key === "space") {
+        btn.classList.add('space');
+        btn.textContent = "Space";
+        btn.title = "Space";
+        btn.addEventListener('click', () => {
+          input.value += " ";
+          input.focus();
+        });
+      } else {
+        btn.textContent = key;
+        btn.classList.add('key-label');
+        btn.addEventListener('click', () => {
+          input.value += key;
+          input.focus();
+        });
+      }
+
+      keyboard.appendChild(btn);
+    });
+
+    // Activate Lucide icons
+    lucide.createIcons();
+  </script>
 
 </body>
 </html>
